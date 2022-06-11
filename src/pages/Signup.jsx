@@ -6,6 +6,7 @@ import {
    signInWithEmailAndPassword,
    updateProfile,
 } from 'firebase/auth'
+import { toast } from 'react-toastify'
 import { setDoc, doc, serverTimestamp } from 'firebase/firestore'
 import { db } from '../firebase.config'
 import { ReactComponent as ArrowRightIcon } from '../assets/svg/keyboardArrowRightIcon.svg'
@@ -56,7 +57,7 @@ function Signup() {
 
          navigate('/')
       } catch (error) {
-         console.log(error)
+         toast.error('Something went wrong')
       }
    }
 
