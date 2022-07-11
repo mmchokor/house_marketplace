@@ -1,21 +1,17 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams, Link } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
-// eslint-disable-next-line
-import SwiperCore, { Navigation, Pagination, Scrollbar, A11y } from 'swiper'
-// eslint-disable-next-line
-import { Swiper, SwiperSlide } from 'swiper/react'
-import 'swiper/swiper-bundle.css'
 import { getDoc, doc } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth'
 import { db } from '../firebase.config'
 import Spinner from '../components/Spinner'
 import shareIcon from '../assets/svg/shareIcon.svg'
+import Slider from 'react-slick'
 
 function Listing() {
    const [listing, setListing] = useState(null)
    const [loading, setLoading] = useState(true)
-   const [shareLinkCopied, setShareLinkCopied] = useState(null)
+   const [shareLinkCopied, setShareLinkCopied] = useState(false)
 
    const navigate = useNavigate()
    const params = useParams()
@@ -39,21 +35,35 @@ function Listing() {
       return <Spinner />
    }
 
+   const settings = {
+      dots: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+   }
+
    return (
       <main>
-         {/* <Swiper slidesPerView={1} pagination={true}>
+         <title>{listing.name}</title>
+         <Slider {...settings}>
             {listing.imgUrls.map((url, index) => (
-               <SwiperSlide key={index}>
-                  <div
+               <div key={index}>
+                  {/* add an image with url and style to set high auto */}
+                  <img
+                     src={url}
+                     alt='slider'
                      style={{
-                        background: `url(${listing.imgUrls[index]}) center no-repeat`,
-                        backgroundSize: 'cover',
+                        maxWidth: '100%',
+                        height: 'auto',
+                        display: 'block',
+                        marginLeft: 'auto',
+                        marginRight: 'auto',
                      }}
-                     className='swiperSlideDiv'
-                  ></div>
-               </SwiperSlide>
+                  />
+               </div>
             ))}
-         </Swiper> */}
+         </Slider>
 
          <div
             className='shareIconDiv'
@@ -65,9 +75,10 @@ function Listing() {
                }, 2000)
             }}
          >
-            <img src={shareIcon} alt='share' />
+            <img src={shareIcon} alt='' />
          </div>
-         {shareLinkCopied && <p className='linkCopied'>Link Copied</p>}
+
+         {shareLinkCopied && <p className='linkCopied'>Link Copied!</p>}
 
          <div className='listingDetails'>
             <p className='listingName'>
@@ -82,7 +93,7 @@ function Listing() {
             </p>
             <p className='listingLocation'>{listing.location}</p>
             <p className='listingType'>
-               {listing.type === 'rent' ? 'Rent' : 'Sale'}
+               For {listing.type === 'rent' ? 'Rent' : 'Sale'}
             </p>
             {listing.offer && (
                <p className='discountPrice'>
@@ -144,3 +155,5 @@ function Listing() {
 }
 
 export default Listing
+
+// https://stackoverflow.com/questions/67552020/how-to-fix-error-failed-to-compile-node-modules-react-leaflet-core-esm-pat
